@@ -26,7 +26,7 @@ interface RefreshTokenInterface
      * invalid:
      * - refresh_token: Refresh token identifier.
      * - client_id: Client identifier.
-     * - user_id: User identifier.
+     * - openID: User identifier.
      * - expires: Expiration unix timestamp, or 0 if the token doesn't expire.
      * - scope: (optional) Scope values in space-separated string.
      *
@@ -51,7 +51,7 @@ interface RefreshTokenInterface
      * Refresh token to be stored.
      * @param $client_id
      * Client identifier to be stored.
-     * @param $user_id
+     * @param $openID
      * User identifier to be stored.
      * @param $expires
      * Expiration timestamp to be stored. 0 if the token doesn't expire.
@@ -60,7 +60,7 @@ interface RefreshTokenInterface
      *
      * @ingroup oauth2_section_6
      */
-    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null);
+    public function setRefreshToken($refresh_token, $client_id, $openID, $expires, $scope = null);
 
     /**
      * Expire a used refresh token.

@@ -8,6 +8,7 @@ class OauthServer
 {
     public $server = null;
     public $storage = null;
+    public $request = null;
 
     public function __construct()
     {
@@ -54,16 +55,16 @@ class OauthServer
             ));
             $scopeUtil = new OAuth2\Scope($memory);
             $this->server->setScopeUtil($scopeUtil);
+            $this->request = OAuth2\Request::createFromGlobals();
         }
     }
 
     public function getCode()
     {
-        $request = OAuth2\Request::createFromGlobals();
         $response = new OAuth2\Response();
 
         // validate the authorize request
-        if (!$this->server->validateAuthorizeRequest($request, $response)) {
+        if (!$this->server->validateAuthorizeRequest($this->request, $response)) {
             $response->send();
             die;
         }
@@ -86,8 +87,8 @@ class OauthServer
             if($is_authorized)
             {
                 $userObj = $this->server->getGrantType('password');
-                if(!$userObj->validateRequest($request, $response)) die("帐户名和密码错误\n");
-                $this->server->handleAuthorizeRequest($request, $response, $is_authorized,$userObj->getUserId());
+                if(!$userObj->validateRequest($this->request, $response)) die("帐户名和密码错误\n");
+                $this->server->handleAuthorizeRequest($this->request, $response, $is_authorized,$userObj->getUserId());
                 // this is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
                 //$code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=') + 5, 40);
                 $response->send();
@@ -101,13 +102,6 @@ class OauthServer
 
     public function getToken()
     {
-        $this->server->handleTokenRequest(OAuth2\Request::createFromGlobals())->send();
-    }
-
-    public function getUserInfo($token)
-    {
-        $token = $this->storage->getAccessToken($token);
-        if($token['expires']<=time()) die(json_encode(array('error'=>'expires invalid')));
-        return $this->storage->getUserById($token['user_id']);
+        $this->server->handleTokenRequest($this->request)->send();
     }
 }

@@ -95,11 +95,11 @@ class Redis implements AuthorizationCodeInterface,
         return $this->getValue($this->config['code_key'] . $code);
     }
 
-    public function setAuthorizationCode($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
+    public function setAuthorizationCode($authorization_code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         return $this->setValue(
             $this->config['code_key'] . $authorization_code,
-            compact('authorization_code', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope', 'id_token'),
+            compact('authorization_code', 'client_id', 'openID', 'redirect_uri', 'expires', 'scope', 'id_token'),
             $expires
         );
     }
@@ -131,9 +131,9 @@ class Redis implements AuthorizationCodeInterface,
             return false;
         }
 
-        // the default behavior is to use "username" as the user_id
+        // the default behavior is to use "username" as the openID
         return array_merge(array(
-            'user_id' => $username,
+            'openID' => $username,
         ), $userInfo);
     }
 
@@ -171,11 +171,11 @@ class Redis implements AuthorizationCodeInterface,
         return $this->getValue($this->config['client_key'] . $client_id);
     }
 
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $user_id = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $openID = null)
     {
         return $this->setValue(
             $this->config['client_key'] . $client_id,
-            compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id')
+            compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'openID')
         );
     }
 
@@ -198,11 +198,11 @@ class Redis implements AuthorizationCodeInterface,
         return $this->getValue($this->config['refresh_token_key'] . $refresh_token);
     }
 
-    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
+    public function setRefreshToken($refresh_token, $client_id, $openID, $expires, $scope = null)
     {
         return $this->setValue(
             $this->config['refresh_token_key'] . $refresh_token,
-            compact('refresh_token', 'client_id', 'user_id', 'expires', 'scope'),
+            compact('refresh_token', 'client_id', 'openID', 'expires', 'scope'),
             $expires
         );
     }
@@ -220,11 +220,11 @@ class Redis implements AuthorizationCodeInterface,
         return $this->getValue($this->config['access_token_key'].$access_token);
     }
 
-    public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
+    public function setAccessToken($access_token, $client_id, $openID, $expires, $scope = null)
     {
         return $this->setValue(
             $this->config['access_token_key'].$access_token,
-            compact('access_token', 'client_id', 'user_id', 'expires', 'scope'),
+            compact('access_token', 'client_id', 'openID', 'expires', 'scope'),
             $expires
         );
     }

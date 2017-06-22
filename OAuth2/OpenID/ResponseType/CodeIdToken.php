@@ -26,13 +26,13 @@ class CodeIdToken implements CodeIdTokenInterface
 
     /**
      * @param array $params
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return mixed
      */
-    public function getAuthorizeResponse($params, $user_id = null)
+    public function getAuthorizeResponse($params, $openID = null)
     {
-        $result = $this->authCode->getAuthorizeResponse($params, $user_id);
-        $resultIdToken = $this->idToken->getAuthorizeResponse($params, $user_id);
+        $result = $this->authCode->getAuthorizeResponse($params, $openID);
+        $resultIdToken = $this->idToken->getAuthorizeResponse($params, $openID);
         $result[1]['query']['id_token'] = $resultIdToken[1]['fragment']['id_token'];
 
         return $result;

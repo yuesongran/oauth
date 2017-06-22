@@ -94,7 +94,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
         return is_null($result) ? false : $result;
     }
 
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $user_id = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $openID = null)
     {
         if ($this->getClientDetails($client_id)) {
 
@@ -104,7 +104,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
                 'redirect_uri'  => $redirect_uri,
                 'grant_types'   => $grant_types,
                 'scope'         => $scope,
-                'user_id'       => $user_id,
+                'openID'       => $openID,
             ));
         } else {
             $this->setObjectByType('client_table',$client_id, array(
@@ -113,7 +113,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
                 'redirect_uri'  => $redirect_uri,
                 'grant_types'   => $grant_types,
                 'scope'         => $scope,
-                'user_id'       => $user_id,
+                'openID'       => $openID,
             ));
         }
 
@@ -141,7 +141,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
         return is_null($token) ? false : $token;
     }
 
-    public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
+    public function setAccessToken($access_token, $client_id, $openID, $expires, $scope = null)
     {
         // if it exists, update it.
         if ($this->getAccessToken($access_token)) {
@@ -149,7 +149,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
                 'access_token' => $access_token,
                 'client_id' => $client_id,
                 'expires' => $expires,
-                'user_id' => $user_id,
+                'openID' => $openID,
                 'scope' => $scope
             ));
         } else {
@@ -157,7 +157,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
                 'access_token' => $access_token,
                 'client_id' => $client_id,
                 'expires' => $expires,
-                'user_id' => $user_id,
+                'openID' => $openID,
                 'scope' => $scope
             ));
         }
@@ -173,14 +173,14 @@ class CouchbaseDB implements AuthorizationCodeInterface,
         return is_null($code) ? false : $code;
     }
 
-    public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
+    public function setAuthorizationCode($code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         // if it exists, update it.
         if ($this->getAuthorizationCode($code)) {
             $this->setObjectByType('code_table',$code, array(
                 'authorization_code' => $code,
                 'client_id' => $client_id,
-                'user_id' => $user_id,
+                'openID' => $openID,
                 'redirect_uri' => $redirect_uri,
                 'expires' => $expires,
                 'scope' => $scope,
@@ -190,7 +190,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
             $this->setObjectByType('code_table',$code,array(
                 'authorization_code' => $code,
                 'client_id' => $client_id,
-                'user_id' => $user_id,
+                'openID' => $openID,
                 'redirect_uri' => $redirect_uri,
                 'expires' => $expires,
                 'scope' => $scope,
@@ -221,7 +221,7 @@ class CouchbaseDB implements AuthorizationCodeInterface,
     public function getUserDetails($username)
     {
         if ($user = $this->getUser($username)) {
-            $user['user_id'] = $user['username'];
+            $user['openID'] = $user['username'];
         }
 
         return $user;
@@ -235,12 +235,12 @@ class CouchbaseDB implements AuthorizationCodeInterface,
         return is_null($token) ? false : $token;
     }
 
-    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
+    public function setRefreshToken($refresh_token, $client_id, $openID, $expires, $scope = null)
     {
         $this->setObjectByType('refresh_token_table',$refresh_token, array(
             'refresh_token' => $refresh_token,
             'client_id' => $client_id,
-            'user_id' => $user_id,
+            'openID' => $openID,
             'expires' => $expires,
             'scope' => $scope
         ));

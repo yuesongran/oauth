@@ -112,7 +112,7 @@ class RefreshToken implements GrantTypeInterface
      */
     public function getUserId()
     {
-        return isset($this->refreshToken['user_id']) ? $this->refreshToken['user_id'] : null;
+        return isset($this->refreshToken['openID']) ? $this->refreshToken['openID'] : null;
     }
 
     /**
@@ -130,11 +130,11 @@ class RefreshToken implements GrantTypeInterface
      *
      * @param AccessTokenInterface $accessToken
      * @param mixed                $client_id   - client identifier related to the access token.
-     * @param mixed                $user_id     - user id associated with the access token
+     * @param mixed                $openID     - user id associated with the access token
      * @param string               $scope       - scopes to be stored in space-separated string.
      * @return array
      */
-    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $user_id, $scope)
+    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $openID, $scope)
     {
         /*
          * It is optional to force a new refresh token when a refresh token is used.
@@ -143,7 +143,7 @@ class RefreshToken implements GrantTypeInterface
          */
         $issueNewRefreshToken = $this->config['always_issue_new_refresh_token'];
         $unsetRefreshToken = $this->config['unset_refresh_token_after_use'];
-        $token = $accessToken->createAccessToken($client_id, $user_id, $scope, $issueNewRefreshToken);
+        $token = $accessToken->createAccessToken($client_id, $openID, $scope, $issueNewRefreshToken);
 
         if ($unsetRefreshToken) {
             $this->storage->unsetRefreshToken($this->refreshToken['refresh_token']);

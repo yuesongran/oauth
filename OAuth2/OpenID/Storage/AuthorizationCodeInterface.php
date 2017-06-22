@@ -25,7 +25,7 @@ interface AuthorizationCodeInterface extends BaseAuthorizationCodeInterface
      *
      * @param string $code         - authorization code to be stored.
      * @param mixed $client_id     - client identifier to be stored.
-     * @param mixed $user_id       - user identifier to be stored.
+     * @param mixed $openID       - user identifier to be stored.
      * @param string $redirect_uri - redirect URI(s) to be stored in a space-separated string.
      * @param int    $expires      - expiration to be stored as a Unix timestamp.
      * @param string $scope        - OPTIONAL scopes to be stored in space-separated string.
@@ -33,5 +33,5 @@ interface AuthorizationCodeInterface extends BaseAuthorizationCodeInterface
      *
      * @ingroup oauth2_section_4
      */
-    public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null);
+    public function setAuthorizationCode($code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null);
 }

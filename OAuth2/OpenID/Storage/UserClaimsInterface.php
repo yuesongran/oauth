@@ -23,7 +23,7 @@ interface UserClaimsInterface
      * Groups of claims are returned based on the requested scopes. No group
      * is required, and no claim is required.
      *
-     * @param mixed  $user_id - The id of the user for which claims should be returned.
+     * @param mixed  $openID - The id of the user for which claims should be returned.
      * @param string $scope   - The requested scope.
      * Scopes with matching claims: profile, email, address, phone.
      *
@@ -31,5 +31,5 @@ interface UserClaimsInterface
      *
      * @see http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
      */
-    public function getUserClaims($user_id, $scope);
+    public function getUserClaims($openID, $scope);
 }

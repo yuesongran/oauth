@@ -28,7 +28,7 @@ interface ClientInterface
      *               "redirect_uri" => REDIRECT_URI,      // REQUIRED redirect_uri registered for the client
      *               "client_id"    => CLIENT_ID,         // OPTIONAL the client id
      *               "grant_types"  => GRANT_TYPES,       // OPTIONAL an array of restricted grant types
-     *               "user_id"      => USER_ID,           // OPTIONAL the user identifier associated with this client
+     *               "openID"      => openID,           // OPTIONAL the user identifier associated with this client
      *               "scope"        => SCOPE,             // OPTIONAL the scopes allowed for this client
      *               );
      *               </code>

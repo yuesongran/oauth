@@ -6,8 +6,8 @@ interface ResponseTypeInterface
 {
     /**
      * @param array $params
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return mixed
      */
-    public function getAuthorizeResponse($params, $user_id = null);
+    public function getAuthorizeResponse($params, $openID = null);
 }

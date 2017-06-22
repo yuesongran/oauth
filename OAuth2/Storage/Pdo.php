@@ -133,19 +133,19 @@ class Pdo implements
      * @param null|string $redirect_uri
      * @param null|array  $grant_types
      * @param null|string $scope
-     * @param null|string $user_id
+     * @param null|string $openID
      * @return bool
      */
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $user_id = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $openID = null)
     {
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types, scope=:scope, user_id=:user_id where client_id=:client_id', $this->config['client_table']));
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types, scope=:scope, openID=:openID where client_id=:client_id', $this->config['client_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)', $this->config['client_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, openID) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :openID)', $this->config['client_table']));
         }
 
-        return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
+        return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'openID'));
     }
 
     /**
@@ -186,24 +186,24 @@ class Pdo implements
     /**
      * @param string $access_token
      * @param mixed  $client_id
-     * @param mixed  $user_id
+     * @param mixed  $openID
      * @param int    $expires
      * @param string $scope
      * @return bool
      */
-    public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
+    public function setAccessToken($access_token, $client_id, $openID, $expires, $scope = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
         // if it exists, update it.
         if ($this->getAccessToken($access_token)) {
-            $stmt = $this->db->prepare(sprintf('UPDATE %s SET client_id=:client_id, expires=:expires, user_id=:user_id, scope=:scope where access_token=:access_token', $this->config['access_token_table']));
+            $stmt = $this->db->prepare(sprintf('UPDATE %s SET client_id=:client_id, expires=:expires, openID=:openID, scope=:scope where access_token=:access_token', $this->config['access_token_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (access_token, client_id, expires, user_id, scope) VALUES (:access_token, :client_id, :expires, :user_id, :scope)', $this->config['access_token_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (access_token, client_id, expires, openID, scope) VALUES (:access_token, :client_id, :expires, :openID, :scope)', $this->config['access_token_table']));
         }
 
-        return $stmt->execute(compact('access_token', 'client_id', 'user_id', 'expires', 'scope'));
+        return $stmt->execute(compact('access_token', 'client_id', 'openID', 'expires', 'scope'));
     }
 
     /**
@@ -240,14 +240,14 @@ class Pdo implements
     /**
      * @param string $code
      * @param mixed  $client_id
-     * @param mixed  $user_id
+     * @param mixed  $openID
      * @param string $redirect_uri
      * @param int    $expires
      * @param string $scope
      * @param string $id_token
      * @return bool|mixed
      */
-    public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
+    public function setAuthorizationCode($code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         if (func_num_args() > 6) {
             // we are calling with an id token
@@ -259,37 +259,37 @@ class Pdo implements
 
         // if it exists, update it.
         if ($this->getAuthorizationCode($code)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_id=:client_id, user_id=:user_id, redirect_uri=:redirect_uri, expires=:expires, scope=:scope where authorization_code=:code', $this->config['code_table']));
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_id=:client_id, openID=:openID, redirect_uri=:redirect_uri, expires=:expires, scope=:scope where authorization_code=:code', $this->config['code_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (authorization_code, client_id, user_id, redirect_uri, expires, scope) VALUES (:code, :client_id, :user_id, :redirect_uri, :expires, :scope)', $this->config['code_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (authorization_code, client_id, openID, redirect_uri, expires, scope) VALUES (:code, :client_id, :openID, :redirect_uri, :expires, :scope)', $this->config['code_table']));
         }
 
-        return $stmt->execute(compact('code', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope'));
+        return $stmt->execute(compact('code', 'client_id', 'openID', 'redirect_uri', 'expires', 'scope'));
     }
 
     /**
      * @param string $code
      * @param mixed  $client_id
-     * @param mixed  $user_id
+     * @param mixed  $openID
      * @param string $redirect_uri
      * @param string $expires
      * @param string $scope
      * @param string $id_token
      * @return bool
      */
-    private function setAuthorizationCodeWithIdToken($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
+    private function setAuthorizationCodeWithIdToken($code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
         // if it exists, update it.
         if ($this->getAuthorizationCode($code)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_id=:client_id, user_id=:user_id, redirect_uri=:redirect_uri, expires=:expires, scope=:scope, id_token =:id_token where authorization_code=:code', $this->config['code_table']));
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_id=:client_id, openID=:openID, redirect_uri=:redirect_uri, expires=:expires, scope=:scope, id_token =:id_token where authorization_code=:code', $this->config['code_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (authorization_code, client_id, user_id, redirect_uri, expires, scope, id_token) VALUES (:code, :client_id, :user_id, :redirect_uri, :expires, :scope, :id_token)', $this->config['code_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (authorization_code, client_id, openID, redirect_uri, expires, scope, id_token) VALUES (:code, :client_id, :openID, :redirect_uri, :expires, :scope, :id_token)', $this->config['code_table']));
         }
 
-        return $stmt->execute(compact('code', 'client_id', 'user_id', 'redirect_uri', 'expires', 'scope', 'id_token'));
+        return $stmt->execute(compact('code', 'client_id', 'openID', 'redirect_uri', 'expires', 'scope', 'id_token'));
     }
 
     /**
@@ -327,13 +327,13 @@ class Pdo implements
     }
 
     /**
-     * @param mixed  $user_id
+     * @param mixed  $openID
      * @param string $claims
      * @return array|bool
      */
-    public function getUserClaims($user_id, $claims)
+    public function getUserClaims($openID, $claims)
     {
-        if (!$userDetails = $this->getUserDetails($user_id)) {
+        if (!$userDetails = $this->getUserDetails($openID)) {
             return false;
         }
 
@@ -394,19 +394,19 @@ class Pdo implements
     /**
      * @param string $refresh_token
      * @param mixed  $client_id
-     * @param mixed  $user_id
+     * @param mixed  $openID
      * @param string $expires
      * @param string $scope
      * @return bool
      */
-    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
+    public function setRefreshToken($refresh_token, $client_id, $openID, $expires, $scope = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
-        $stmt = $this->db->prepare(sprintf('INSERT INTO %s (refresh_token, client_id, user_id, expires, scope) VALUES (:refresh_token, :client_id, :user_id, :expires, :scope)', $this->config['refresh_token_table']));
+        $stmt = $this->db->prepare(sprintf('INSERT INTO %s (refresh_token, client_id, openID, expires, scope) VALUES (:refresh_token, :client_id, :openID, :expires, :scope)', $this->config['refresh_token_table']));
 
-        return $stmt->execute(compact('refresh_token', 'client_id', 'user_id', 'expires', 'scope'));
+        return $stmt->execute(compact('refresh_token', 'client_id', 'openID', 'expires', 'scope'));
     }
 
     /**
@@ -453,21 +453,19 @@ class Pdo implements
             return false;
         }
 
-        // the default behavior is to use "username" as the user_id
-        return array_merge(array(
-            'user_id' => $username
-        ), $userInfo);
+        // the default behavior is to use "username" as the openID
+        return $userInfo;
     }
 
-    public function getUserById($user_id)
+    public function getCorpIdByOpenID($openID)
     {
-        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where user_id=:user_id', $this->config['user_table']));
-        $stmt->execute(array('user_id' => $user_id));
+        $stmt = $this->db->prepare($sql = sprintf('SELECT corpid from %s where openID=:openID', $this->config['user_table']));
+        $stmt->execute(array('openID' => $openID));
 
-        if (!$userInfo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        if (!$userInfo = $stmt->fetch(\PDO::FETCH_NUM)) {
             return false;
         }
-        return $userInfo;
+        return $userInfo[0];
     }
 
     /**
@@ -479,19 +477,23 @@ class Pdo implements
      * @param string $lastName
      * @return bool
      */
-    public function setUser($username, $password, $firstName = null, $lastName = null)
+    public function setUser($username, $password, $corpid)
     {
+        $uniqid = uniqid();
+        $time = microtime(true);
+        $openID = substr(md5($uniqid.$time.$corpid),0,28);
+
         // do not store in plaintext
         $password = $this->hashPassword($password);
 
         // if it exists, update it.
         if ($this->getUser($username)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET password=:password, first_name=:firstName, last_name=:lastName where username=:username', $this->config['user_table']));
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET password=:password where username=:username', $this->config['user_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (username, password, first_name, last_name) VALUES (:username, :password, :firstName, :lastName)', $this->config['user_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (openID,username, password, corpid) VALUES (:openID,:username, :password, :corpid)', $this->config['user_table']));
         }
 
-        return $stmt->execute(compact('username', 'password', 'firstName', 'lastName'));
+        return $stmt->execute(compact('openID','username', 'password', 'corpid'));
     }
 
     /**
@@ -666,14 +668,14 @@ class Pdo implements
           redirect_uri          VARCHAR(2000),
           grant_types           VARCHAR(80),
           scope                 VARCHAR(4000),
-          user_id               VARCHAR(80),
+          openID               VARCHAR(80),
           PRIMARY KEY (client_id)
         );
 
             CREATE TABLE {$this->config['access_token_table']} (
               access_token         VARCHAR(40)    NOT NULL,
               client_id            VARCHAR(80)    NOT NULL,
-              user_id              VARCHAR(80),
+              openID              VARCHAR(80),
               expires              TIMESTAMP      NOT NULL,
               scope                VARCHAR(4000),
               PRIMARY KEY (access_token)
@@ -682,7 +684,7 @@ class Pdo implements
             CREATE TABLE {$this->config['code_table']} (
               authorization_code  VARCHAR(40)    NOT NULL,
               client_id           VARCHAR(80)    NOT NULL,
-              user_id             VARCHAR(80),
+              openID             VARCHAR(80),
               redirect_uri        VARCHAR(2000),
               expires             TIMESTAMP      NOT NULL,
               scope               VARCHAR(4000),
@@ -693,7 +695,7 @@ class Pdo implements
             CREATE TABLE {$this->config['refresh_token_table']} (
               refresh_token       VARCHAR(40)    NOT NULL,
               client_id           VARCHAR(80)    NOT NULL,
-              user_id             VARCHAR(80),
+              openID             VARCHAR(80),
               expires             TIMESTAMP      NOT NULL,
               scope               VARCHAR(4000),
               PRIMARY KEY (refresh_token)

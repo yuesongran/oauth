@@ -30,14 +30,14 @@ class IdTokenToken implements IdTokenTokenInterface
 
     /**
      * @param array $params
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return mixed
      */
-    public function getAuthorizeResponse($params, $user_id = null)
+    public function getAuthorizeResponse($params, $openID = null)
     {
-        $result = $this->accessToken->getAuthorizeResponse($params, $user_id);
+        $result = $this->accessToken->getAuthorizeResponse($params, $openID);
         $access_token = $result[1]['fragment']['access_token'];
-        $id_token = $this->idToken->createIdToken($params['client_id'], $user_id, $params['nonce'], null, $access_token);
+        $id_token = $this->idToken->createIdToken($params['client_id'], $openID, $params['nonce'], null, $access_token);
         $result[1]['fragment']['id_token'] = $id_token;
 
         return $result;

@@ -22,7 +22,7 @@ interface AccessTokenInterface
      *     array(
      *         'expires'   => $expires,   // Stored expiration in unix timestamp.
      *         'client_id' => $client_id, // (optional) Stored client identifier.
-     *         'user_id'   => $user_id,   // (optional) Stored user identifier.
+     *         'openID'   => $openID,   // (optional) Stored user identifier.
      *         'scope'     => $scope,     // (optional) Stored scope values in space-separated string.
      *         'id_token'  => $id_token   // (optional) Stored id_token (if "use_openid_connect" is true).
      *     );
@@ -39,13 +39,13 @@ interface AccessTokenInterface
      *
      * @param string $oauth_token - oauth_token to be stored.
      * @param mixed  $client_id   - client identifier to be stored.
-     * @param mixed  $user_id     - user identifier to be stored.
+     * @param mixed  $openID     - user identifier to be stored.
      * @param int    $expires     - expiration to be stored as a Unix timestamp.
      * @param string $scope       - OPTIONAL Scopes to be stored in space-separated string.
      *
      * @ingroup oauth2_section_4
      */
-    public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null);
+    public function setAccessToken($oauth_token, $client_id, $openID, $expires, $scope = null);
 
     /**
      * Expire an access token.

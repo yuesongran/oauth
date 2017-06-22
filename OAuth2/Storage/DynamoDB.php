@@ -112,7 +112,7 @@ class DynamoDB implements
             return false ;
         }
         $result = $this->dynamo2array($result);
-        foreach (array('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id') as $key => $val) {
+        foreach (array('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'openID') as $key => $val) {
             if (!array_key_exists ($val, $result)) {
                 $result[$val] = null;
             }
@@ -121,9 +121,9 @@ class DynamoDB implements
         return $result;
     }
 
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $user_id = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope = null, $openID = null)
     {
-        $clientData = compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id');
+        $clientData = compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'openID');
         $clientData = array_filter($clientData, 'self::isNotEmpty');
 
         $result = $this->client->putItem(array(
@@ -165,12 +165,12 @@ class DynamoDB implements
         return $token;
     }
 
-    public function setAccessToken($access_token, $client_id, $user_id, $expires, $scope = null)
+    public function setAccessToken($access_token, $client_id, $openID, $expires, $scope = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
-        $clientData = compact('access_token', 'client_id', 'user_id', 'expires', 'scope');
+        $clientData = compact('access_token', 'client_id', 'openID', 'expires', 'scope');
         $clientData = array_filter($clientData, 'self::isNotEmpty');
 
         $result = $this->client->putItem(array(
@@ -213,12 +213,12 @@ class DynamoDB implements
 
     }
 
-    public function setAuthorizationCode($authorization_code, $client_id, $user_id, $redirect_uri, $expires, $scope = null, $id_token = null)
+    public function setAuthorizationCode($authorization_code, $client_id, $openID, $redirect_uri, $expires, $scope = null, $id_token = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
-        $clientData = compact('authorization_code', 'client_id', 'user_id', 'redirect_uri', 'expires', 'id_token', 'scope');
+        $clientData = compact('authorization_code', 'client_id', 'openID', 'redirect_uri', 'expires', 'id_token', 'scope');
         $clientData = array_filter($clientData, 'self::isNotEmpty');
 
         $result = $this->client->putItem(array(
@@ -256,9 +256,9 @@ class DynamoDB implements
     }
 
     /* UserClaimsInterface */
-    public function getUserClaims($user_id, $claims)
+    public function getUserClaims($openID, $claims)
     {
-        if (!$userDetails = $this->getUserDetails($user_id)) {
+        if (!$userDetails = $this->getUserDetails($openID)) {
             return false;
         }
 
@@ -314,12 +314,12 @@ class DynamoDB implements
         return $token;
     }
 
-    public function setRefreshToken($refresh_token, $client_id, $user_id, $expires, $scope = null)
+    public function setRefreshToken($refresh_token, $client_id, $openID, $expires, $scope = null)
     {
         // convert expires to datestring
         $expires = date('Y-m-d H:i:s', $expires);
 
-        $clientData = compact('refresh_token', 'client_id', 'user_id', 'expires', 'scope');
+        $clientData = compact('refresh_token', 'client_id', 'openID', 'expires', 'scope');
         $clientData = array_filter($clientData, 'self::isNotEmpty');
 
         $result = $this->client->putItem(array(
@@ -362,7 +362,7 @@ class DynamoDB implements
             return false ;
         }
         $token = $this->dynamo2array($result);
-        $token['user_id'] = $username;
+        $token['openID'] = $username;
 
         return $token;
     }

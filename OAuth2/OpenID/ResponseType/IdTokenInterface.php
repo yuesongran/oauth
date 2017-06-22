@@ -21,7 +21,7 @@ interface IdTokenInterface extends ResponseTypeInterface
      * @param string $userClaims       - OPTIONAL Claims about the user.
      * @param string $access_token     - OPTIONAL The access token, if known.
 
-     * @internal param string $user_id - The user id.
+     * @internal param string $openID - The user id.
      * @return string The ID Token represented as a JSON Web Token (JWT).
      *
      * @see http://openid.net/specs/openid-connect-core-1_0.html#IDToken

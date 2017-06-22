@@ -12,14 +12,14 @@ use OAuth2\ResponseInterface;
  *  requires the application to determine the value of $is_authorized
  *
  *  @code
- *      $user_id = $this->somehowDetermineUserId();
+ *      $openID = $this->somehowDetermineUserId();
  *      $is_authorized = $this->somehowDetermineUserAuthorization();
  *      $response = new OAuth2\Response();
  *      $authorizeController->handleAuthorizeRequest(
  *          OAuth2\Request::createFromGlobals(),
  *          $response,
  *          $is_authorized,
- *          $user_id
+ *          $openID
  *      );
  *      $response->send();
  * @endcode
@@ -44,10 +44,10 @@ interface AuthorizeControllerInterface
      * @param RequestInterface $request
      * @param ResponseInterface $response
      * @param $is_authorized
-     * @param null $user_id
+     * @param null $openID
      * @return mixed
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null);
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $openID = null);
 
     /**
      * @param RequestInterface $request

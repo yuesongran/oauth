@@ -369,17 +369,17 @@ class Server implements ResourceControllerInterface,
      *
      * @param ResponseInterface $response      - Response object
      * @param bool              $is_authorized - TRUE or FALSE depending on whether the user authorized the access.
-     * @param mixed             $user_id       - Identifier of user who authorized the client
+     * @param mixed             $openID       - Identifier of user who authorized the client
      * @return ResponseInterface
      *
      * @see http://tools.ietf.org/html/rfc6749#section-4
      *
      * @ingroup oauth2_section_4
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null)
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $openID = null)
     {
         $this->response = $response;
-        $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $user_id);
+        $this->getAuthorizeController()->handleAuthorizeRequest($request, $this->response, $is_authorized, $openID);
 
         return $this->response;
     }

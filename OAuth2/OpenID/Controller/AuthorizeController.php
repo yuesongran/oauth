@@ -22,13 +22,13 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
      * @param RequestInterface  $request
      * @param ResponseInterface $response
      * @param string            $redirect_uri
-     * @param null              $user_id
+     * @param null              $openID
      */
-    protected function setNotAuthorizedResponse(RequestInterface $request, ResponseInterface $response, $redirect_uri, $user_id = null)
+    protected function setNotAuthorizedResponse(RequestInterface $request, ResponseInterface $response, $redirect_uri, $openID = null)
     {
         $prompt = $request->query('prompt', 'consent');
         if ($prompt == 'none') {
-            if (is_null($user_id)) {
+            if (is_null($openID)) {
                 $error = 'login_required';
                 $error_message = 'The user must log in';
             } else {
@@ -48,18 +48,18 @@ class AuthorizeController extends BaseAuthorizeController implements AuthorizeCo
      *
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return array
      */
-    protected function buildAuthorizeParameters($request, $response, $user_id)
+    protected function buildAuthorizeParameters($request, $response, $openID)
     {
-        if (!$params = parent::buildAuthorizeParameters($request, $response, $user_id)) {
+        if (!$params = parent::buildAuthorizeParameters($request, $response, $openID)) {
             return;
         }
 
         // Generate an id token if needed.
         if ($this->needsIdToken($this->getScope()) && $this->getResponseType() == self::RESPONSE_TYPE_AUTHORIZATION_CODE) {
-            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $user_id, $this->nonce);
+            $params['id_token'] = $this->responseTypes['id_token']->createIdToken($this->getClientId(), $openID, $this->nonce);
         }
 
         // add the nonce to return with the redirect URI

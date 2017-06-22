@@ -65,7 +65,7 @@ class ClientCredentials extends HttpBasic implements GrantTypeInterface
     {
         $this->loadClientData();
 
-        return isset($this->clientData['user_id']) ? $this->clientData['user_id'] : null;
+        return isset($this->clientData['openID']) ? $this->clientData['openID'] : null;
     }
 
     /**
@@ -73,11 +73,11 @@ class ClientCredentials extends HttpBasic implements GrantTypeInterface
      *
      * @param AccessTokenInterface $accessToken
      * @param mixed                $client_id   - client identifier related to the access token.
-     * @param mixed                $user_id     - user id associated with the access token
+     * @param mixed                $openID     - user id associated with the access token
      * @param string               $scope       - scopes to be stored in space-separated string.
      * @return array
      */
-    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $user_id, $scope)
+    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $openID, $scope)
     {
         /**
          * Client Credentials Grant does NOT include a refresh token
@@ -86,7 +86,7 @@ class ClientCredentials extends HttpBasic implements GrantTypeInterface
          */
         $includeRefreshToken = false;
 
-        return $accessToken->createAccessToken($client_id, $user_id, $scope, $includeRefreshToken);
+        return $accessToken->createAccessToken($client_id, $openID, $scope, $includeRefreshToken);
     }
 
     private function loadClientData()

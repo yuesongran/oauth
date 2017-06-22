@@ -54,10 +54,10 @@ class AccessToken implements AccessTokenInterface
      * Get authorize response
      *
      * @param array $params
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return array
      */
-    public function getAuthorizeResponse($params, $user_id = null)
+    public function getAuthorizeResponse($params, $openID = null)
     {
         // build the URL to redirect to
         $result = array('query' => array());
@@ -70,7 +70,7 @@ class AccessToken implements AccessTokenInterface
          * @see http://tools.ietf.org/html/rfc6749#section-4.2.2
          */
         $includeRefreshToken = false;
-        $result["fragment"] = $this->createAccessToken($params['client_id'], $user_id, $params['scope'], $includeRefreshToken);
+        $result["fragment"] = $this->createAccessToken($params['client_id'], $openID, $params['scope'], $includeRefreshToken);
 
         if (isset($params['state'])) {
             $result["fragment"]["state"] = $params['state'];
@@ -83,7 +83,7 @@ class AccessToken implements AccessTokenInterface
      * Handle the creation of access token, also issue refresh token if supported / desirable.
      *
      * @param mixed  $client_id           - client identifier related to the access token.
-     * @param mixed  $user_id             - user ID associated with the access token
+     * @param mixed  $openID             - user ID associated with the access token
      * @param string $scope               - OPTIONAL scopes to be stored in space-separated string.
      * @param bool   $includeRefreshToken - if true, a new refresh_token will be added to the response
      * @return array
@@ -91,16 +91,17 @@ class AccessToken implements AccessTokenInterface
      * @see http://tools.ietf.org/html/rfc6749#section-5
      * @ingroup oauth2_section_5
      */
-    public function createAccessToken($client_id, $user_id, $scope = null, $includeRefreshToken = true)
+    public function createAccessToken($client_id, $openID, $scope = null, $includeRefreshToken = true)
     {
         $token = array(
+            "openID" => $openID,
             "access_token" => $this->generateAccessToken(),
             "expires_in" => $this->config['access_lifetime'],
             "token_type" => $this->config['token_type'],
             "scope" => $scope
         );
 
-        $this->tokenStorage->setAccessToken($token["access_token"], $client_id, $user_id, $this->config['access_lifetime'] ? time() + $this->config['access_lifetime'] : null, $scope);
+        $this->tokenStorage->setAccessToken($token["access_token"], $client_id, $openID, $this->config['access_lifetime'] ? time() + $this->config['access_lifetime'] : null, $scope);
 
         /*
          * Issue a refresh token also, if we support them
@@ -114,7 +115,7 @@ class AccessToken implements AccessTokenInterface
             if ($this->config['refresh_token_lifetime'] > 0) {
                 $expires = time() + $this->config['refresh_token_lifetime'];
             }
-            $this->refreshStorage->setRefreshToken($token['refresh_token'], $client_id, $user_id, $expires, $scope);
+            $this->refreshStorage->setRefreshToken($token['refresh_token'], $client_id, $openID, $expires, $scope);
         }
 
         return $token;

@@ -101,11 +101,11 @@ class AuthorizeController implements AuthorizeControllerInterface
      * @param RequestInterface  $request
      * @param ResponseInterface $response
      * @param boolean           $is_authorized
-     * @param mixed             $user_id
+     * @param mixed             $openID
      * @return mixed|void
      * @throws InvalidArgumentException
      */
-    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $user_id = null)
+    public function handleAuthorizeRequest(RequestInterface $request, ResponseInterface $response, $is_authorized, $openID = null)
     {
         if (!is_bool($is_authorized)) {
             throw new InvalidArgumentException('Argument "is_authorized" must be a boolean.  This method must know if the user has granted access to the client.');
@@ -126,17 +126,17 @@ class AuthorizeController implements AuthorizeControllerInterface
         // the user declined access to the client's application
         if ($is_authorized === false) {
             $redirect_uri = $this->redirect_uri ?: $registered_redirect_uri;
-            $this->setNotAuthorizedResponse($request, $response, $redirect_uri, $user_id);
+            $this->setNotAuthorizedResponse($request, $response, $redirect_uri, $openID);
 
             return;
         }
 
         // build the parameters to set in the redirect URI
-        if (!$params = $this->buildAuthorizeParameters($request, $response, $user_id)) {
+        if (!$params = $this->buildAuthorizeParameters($request, $response, $openID)) {
             return;
         }
 
-        $authResult = $this->responseTypes[$this->response_type]->getAuthorizeResponse($params, $user_id);
+        $authResult = $this->responseTypes[$this->response_type]->getAuthorizeResponse($params, $openID);
 
         list($redirect_uri, $uri_params) = $authResult;
 
@@ -156,9 +156,9 @@ class AuthorizeController implements AuthorizeControllerInterface
      * @param RequestInterface  $request
      * @param ResponseInterface $response
      * @param string            $redirect_uri
-     * @param mixed             $user_id
+     * @param mixed             $openID
      */
-    protected function setNotAuthorizedResponse(RequestInterface $request, ResponseInterface $response, $redirect_uri, $user_id = null)
+    protected function setNotAuthorizedResponse(RequestInterface $request, ResponseInterface $response, $redirect_uri, $openID = null)
     {
         $error = 'access_denied';
         $error_message = 'The user denied access to your application';
@@ -173,10 +173,10 @@ class AuthorizeController implements AuthorizeControllerInterface
      *
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param mixed $user_id
+     * @param mixed $openID
      * @return array
      */
-    protected function buildAuthorizeParameters($request, $response, $user_id)
+    protected function buildAuthorizeParameters($request, $response, $openID)
     {
         // @TODO: we should be explicit with this in the future
         $params = array(

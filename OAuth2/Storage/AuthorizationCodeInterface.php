@@ -35,7 +35,7 @@ interface AuthorizationCodeInterface
      * @code
      * return array(
      *     "client_id"    => CLIENT_ID,      // REQUIRED Stored client identifier
-     *     "user_id"      => USER_ID,        // REQUIRED Stored user identifier
+     *     "openID"      => openID,        // REQUIRED Stored user identifier
      *     "expires"      => EXPIRES,        // REQUIRED Stored expiration in unix timestamp
      *     "redirect_uri" => REDIRECT_URI,   // REQUIRED Stored redirect URI
      *     "scope"        => SCOPE,          // OPTIONAL Stored scope values in space-separated string
@@ -61,14 +61,14 @@ interface AuthorizationCodeInterface
      *
      * @param string $code         - Authorization code to be stored.
      * @param mixed  $client_id    - Client identifier to be stored.
-     * @param mixed  $user_id      - User identifier to be stored.
+     * @param mixed  $openID      - User identifier to be stored.
      * @param string $redirect_uri - Redirect URI(s) to be stored in a space-separated string.
      * @param int    $expires      - Expiration to be stored as a Unix timestamp.
      * @param string $scope        - OPTIONAL Scopes to be stored in space-separated string.
      *
      * @ingroup oauth2_section_4
      */
-    public function setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, $expires, $scope = null);
+    public function setAuthorizationCode($code, $client_id, $openID, $redirect_uri, $expires, $scope = null);
 
     /**
      * once an Authorization Code is used, it must be exipired

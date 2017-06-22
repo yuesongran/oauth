@@ -67,8 +67,8 @@ class IdToken implements IdTokenInterface
         $params += array('scope' => null, 'state' => null, 'nonce' => null);
 
         // create the id token.
-        list($user_id, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
-        $userClaims = $this->userClaimsStorage->getUserClaims($user_id, $params['scope']);
+        list($openID, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
+        $userClaims = $this->userClaimsStorage->getUserClaims($openID, $params['scope']);
 
         $id_token = $this->createIdToken($params['client_id'], $userInfo, $params['nonce'], $userClaims, null);
         $result["fragment"] = array('id_token' => $id_token);
@@ -92,11 +92,11 @@ class IdToken implements IdTokenInterface
     public function createIdToken($client_id, $userInfo, $nonce = null, $userClaims = null, $access_token = null)
     {
         // pull auth_time from user info if supplied
-        list($user_id, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
+        list($openID, $auth_time) = $this->getUserIdAndAuthTime($userInfo);
 
         $token = array(
             'iss'        => $this->config['issuer'],
-            'sub'        => $user_id,
+            'sub'        => $openID,
             'aud'        => $client_id,
             'iat'        => time(),
             'exp'        => time() + $this->config['id_lifetime'],
@@ -156,23 +156,23 @@ class IdToken implements IdTokenInterface
     {
         $auth_time = null;
 
-        // support an array for user_id / auth_time
+        // support an array for openID / auth_time
         if (is_array($userInfo)) {
-            if (!isset($userInfo['user_id'])) {
-                throw new LogicException('if $user_id argument is an array, user_id index must be set');
+            if (!isset($userInfo['openID'])) {
+                throw new LogicException('if $openID argument is an array, openID index must be set');
             }
 
             $auth_time = isset($userInfo['auth_time']) ? $userInfo['auth_time'] : null;
-            $user_id = $userInfo['user_id'];
+            $openID = $userInfo['openID'];
         } else {
-            $user_id = $userInfo;
+            $openID = $userInfo;
         }
 
         if (is_null($auth_time)) {
             $auth_time = time();
         }
 
-        // userInfo is a scalar, and so this is the $user_id. Auth Time is null
-        return array($user_id, $auth_time);
+        // userInfo is a scalar, and so this is the $openID. Auth Time is null
+        return array($openID, $auth_time);
     }
 }

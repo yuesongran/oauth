@@ -6,14 +6,15 @@ require_once __DIR__."/OauthServer.php";
 if(isset($_GET['code']) && $_GET['code'])
 {
     $scope ='';
-    $data['client_id'] = "testclient";
-    $data['client_secret'] = "testpass";
+    $data['client_id'] = "sph";
+    $data['client_secret'] = "sphpass";
     $data['grant_type'] = "authorization_code";
     $data['scope'] = $scope;
     $data['code'] = $_GET['code'];
     $data['redirect_uri'] = "http://localhost/oauth/b.php";
     $url = "http://localhost/oauth/Token.php";
     $token = curl($url,$data);
+    echo ($token);
     $_SESSION['token'] = json_decode($token,true);
     header("location:".$data['redirect_uri']);
 }
@@ -22,8 +23,8 @@ else
     var_dump("第一次TOKEN");
     var_dump($_SESSION['token']);
     $scope ='';
-    $data['client_id'] = "testclient";
-    $data['client_secret'] = "testpass";
+    $data['client_id'] = "sph";
+    $data['client_secret'] = "sphpass";
     $data['grant_type'] = "refresh_token";
     $data['scope'] = $scope;
     $data['refresh_token'] = $_SESSION['token']['refresh_token'];

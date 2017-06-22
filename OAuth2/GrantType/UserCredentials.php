@@ -68,8 +68,8 @@ class UserCredentials implements GrantTypeInterface
             return null;
         }
 
-        if (!isset($userInfo['user_id'])) {
-            throw new \LogicException("you must set the user_id on the array returned by getUserDetails");
+        if (!isset($userInfo['openID'])) {
+            throw new \LogicException("you must set the openID on the array returned by getUserDetails");
         }
 
         $this->userInfo = $userInfo;
@@ -94,7 +94,7 @@ class UserCredentials implements GrantTypeInterface
      */
     public function getUserId()
     {
-        return $this->userInfo['user_id'];
+        return $this->userInfo['openID'];
     }
 
     /**
@@ -112,12 +112,12 @@ class UserCredentials implements GrantTypeInterface
      *
      * @param AccessTokenInterface $accessToken
      * @param mixed                $client_id   - client identifier related to the access token.
-     * @param mixed                $user_id     - user id associated with the access token
+     * @param mixed                $openID     - user id associated with the access token
      * @param string               $scope       - scopes to be stored in space-separated string.
      * @return array
      */
-    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $user_id, $scope)
+    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $openID, $scope)
     {
-        return $accessToken->createAccessToken($client_id, $user_id, $scope);
+        return $accessToken->createAccessToken($client_id, $openID, $scope);
     }
 }

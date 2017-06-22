@@ -15,11 +15,11 @@ class AuthorizationCode extends BaseAuthorizationCode
      *
      * @param AccessTokenInterface $accessToken
      * @param mixed                $client_id   - client identifier related to the access token.
-     * @param mixed                $user_id     - user id associated with the access token
+     * @param mixed                $openID     - user id associated with the access token
      * @param string               $scope       - scopes to be stored in space-separated string.
      * @return array
      */
-    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $user_id, $scope)
+    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $openID, $scope)
     {
         $includeRefreshToken = true;
         if (isset($this->authCode['id_token'])) {
@@ -29,7 +29,7 @@ class AuthorizationCode extends BaseAuthorizationCode
             $includeRefreshToken = in_array('offline_access', $scopes);
         }
 
-        $token = $accessToken->createAccessToken($client_id, $user_id, $scope, $includeRefreshToken);
+        $token = $accessToken->createAccessToken($client_id, $openID, $scope, $includeRefreshToken);
         if (isset($this->authCode['id_token'])) {
             $token['id_token'] = $this->authCode['id_token'];
         }

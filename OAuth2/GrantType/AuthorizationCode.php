@@ -120,7 +120,7 @@ class AuthorizationCode implements GrantTypeInterface
      */
     public function getUserId()
     {
-        return isset($this->authCode['user_id']) ? $this->authCode['user_id'] : null;
+        return isset($this->authCode['openID']) ? $this->authCode['openID'] : null;
     }
 
     /**
@@ -128,13 +128,13 @@ class AuthorizationCode implements GrantTypeInterface
      *
      * @param AccessTokenInterface $accessToken
      * @param mixed                $client_id   - client identifier related to the access token.
-     * @param mixed                $user_id     - user id associated with the access token
+     * @param mixed                $openID     - user id associated with the access token
      * @param string               $scope       - scopes to be stored in space-separated string.
      * @return array
      */
-    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $user_id, $scope)
+    public function createAccessToken(AccessTokenInterface $accessToken, $client_id, $openID, $scope)
     {
-        $token = $accessToken->createAccessToken($client_id, $user_id, $scope);
+        $token = $accessToken->createAccessToken($client_id, $openID, $scope);
         $this->storage->expireAuthorizationCode($this->authCode['code']);
 
         return $token;

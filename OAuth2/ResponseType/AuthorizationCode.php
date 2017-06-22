@@ -21,14 +21,14 @@ class AuthorizationCode implements AuthorizationCodeInterface
         ), $config);
     }
 
-    public function getAuthorizeResponse($params, $user_id = null)
+    public function getAuthorizeResponse($params, $openID = null)
     {
         // build the URL to redirect to
         $result = array('query' => array());
 
         $params += array('scope' => null, 'state' => null);
 
-        $result['query']['code'] = $this->createAuthorizationCode($params['client_id'], $user_id, $params['redirect_uri'], $params['scope']);
+        $result['query']['code'] = $this->createAuthorizationCode($params['client_id'], $openID, $params['redirect_uri'], $params['scope']);
 
         if (isset($params['state'])) {
             $result['query']['state'] = $params['state'];
@@ -42,7 +42,7 @@ class AuthorizationCode implements AuthorizationCodeInterface
      *
      * @param $client_id
      * Client identifier related to the authorization code
-     * @param $user_id
+     * @param $openID
      * User ID associated with the authorization code
      * @param $redirect_uri
      * An absolute URI to which the authorization server will redirect the
@@ -53,10 +53,10 @@ class AuthorizationCode implements AuthorizationCodeInterface
      * @see http://tools.ietf.org/html/rfc6749#section-4
      * @ingroup oauth2_section_4
      */
-    public function createAuthorizationCode($client_id, $user_id, $redirect_uri, $scope = null)
+    public function createAuthorizationCode($client_id, $openID, $redirect_uri, $scope = null)
     {
         $code = $this->generateAuthorizationCode();
-        $this->storage->setAuthorizationCode($code, $client_id, $user_id, $redirect_uri, time() + $this->config['auth_code_lifetime'], $scope);
+        $this->storage->setAuthorizationCode($code, $client_id, $openID, $redirect_uri, time() + $this->config['auth_code_lifetime'], $scope);
 
         return $code;
     }

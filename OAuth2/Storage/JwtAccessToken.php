@@ -51,10 +51,10 @@ class JwtAccessToken implements JwtAccessTokenInterface
         return $this->convertJwtToOAuth2($tokenData);
     }
 
-    public function setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope = null)
+    public function setAccessToken($oauth_token, $client_id, $openID, $expires, $scope = null)
     {
         if ($this->tokenStorage) {
-            return $this->tokenStorage->setAccessToken($oauth_token, $client_id, $user_id, $expires, $scope);
+            return $this->tokenStorage->setAccessToken($oauth_token, $client_id, $openID, $expires, $scope);
         }
     }
 
@@ -72,7 +72,7 @@ class JwtAccessToken implements JwtAccessTokenInterface
         $keyMapping = array(
             'aud' => 'client_id',
             'exp' => 'expires',
-            'sub' => 'user_id'
+            'sub' => 'openID'
         );
 
         foreach ($keyMapping as $jwtKey => $oauth2Key) {
